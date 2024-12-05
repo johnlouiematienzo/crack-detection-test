@@ -234,11 +234,15 @@ const MainContent = () => {
   };
 
   const predict = async () => {
-    let imageTensor = tf.browser.fromPixels(imageRef.current);
-    let imageFeatures = modelBase.predict(preprocess(imageTensor));
-    let prediction = modelTrain.predict(imageFeatures).squeeze();
-    let highestIndex = prediction.argMax().arraySync();
-    let predictionArray = prediction.arraySync();
+    const imageTensor = tf.browser.fromPixels(imageRef.current);
+    const imageFeatures = modelBase.predict(preprocess(imageTensor));
+    const prediction = modelTrain.predict(imageFeatures).squeeze();
+    const highestIndex = prediction.argMax().arraySync();
+    const predictionArray = prediction.arraySync();
+
+    imageTensor.dispose();
+    imageFeatures.dispose();
+    prediction.dispose();
 
     return classnames.map((className, index) => ({
       className,
@@ -247,15 +251,18 @@ const MainContent = () => {
   };
 
   const reset = () => {
-    console.log(trainingDataOutputs);
     trainingDataInputs.forEach((input) => input.dispose());
-    trainingDataOutputs.forEach((output) => output.dispose());
+    setTrainingDataInputs([]);
+    setTrainingDataOutputs([]);
     setInputImageGood([]);
     setInputImageBad([]);
     setSrcImage(null);
     setFilename(null);
     setResults([]);
-    console.log(tf.memory().numTensors);
+
+    const canvas = document.getElementById("canvasOutput");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   useEffect(() => {
@@ -462,6 +469,7 @@ const MainContent = () => {
             {results.map((result, index) => (
               <Chip
                 key={index}
+                color={result.className === "GOOD" ? "success" : "error"}
                 label={`${result.className} (${(
                   result.probability * 100
                 ).toFixed(2)}%)`}
