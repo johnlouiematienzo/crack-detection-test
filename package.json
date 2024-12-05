@@ -16,7 +16,6 @@
     "@mui/material": "^6.1.8",
     "@mui/material-nextjs": "^6.1.8",
     "@techstark/opencv-js": "^4.10.0-release.1",
-    "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
